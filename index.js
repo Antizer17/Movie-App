@@ -21,7 +21,7 @@ async function startServer(){
 app.use(express.json())
 app.use(express.urlencoded({extended:true}))
 app.use('/',movieRoutes)
-app.use(('/api/auth'),authRoutes)
+app.use('/api/auth',authRoutes)
 startServer()
 
 process.on('unhandledRejection', (err)=>{
