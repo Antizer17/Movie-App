@@ -1,6 +1,7 @@
 
 import { prisma} from "../config/database.js"
 import bcrypt from "bcryptjs"
+import generateToken from "../utils/generateToken.js";
 
 async function register(req,res){
     console.log("Register endpoint hit with data:", req.body);
@@ -26,14 +27,45 @@ async function register(req,res){
         password:hashedPassword
     }
     })
+    const token = generateToken(user.id,res)
     res.status(201).json({
         success:true,
         user:{
         id:user.id,
         name:user.name,
         email:user.email
-    }})
+    }, token})
 
 }
+const login = async (req,res)=>{
+    const {email,password} = req.body
+    const user= await prisma.users.findUnique({
+        where:{
+            email:email
+        }    
+    })
+    if(!user){
+        res.status(401).json({error:"No user found with this email"})
+        return
+    }
+    const isMatch = await bcrypt.compare(password,user.password)
+    if(!isMatch){
+        res.status(401).json({error:"Invalid password"})
+        return
+    }else{
+        const token = generateToken(user.id,res)
+        res.status(201).json({success:true,
+            data:{
+                user: {
+                id:user.id,
+                name:user.name,
+                email:user.email
+            }
+        }, token})
+    }
 
-export {register};
+
+
+
+}
+export {register, login};
