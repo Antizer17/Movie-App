@@ -63,9 +63,15 @@ const login = async (req,res)=>{
             }
         }, token})
     }
-
-
-
-
 }
-export {register, login};
+async function logout(req,res){
+res.cookie('jwt', "", {
+    httpOnly: true,
+    expires: new Date(0)
+})
+res.status(201).json({
+    success:true,
+    message:"Logged out successfully!"
+})
+}
+export {register, login, logout};
