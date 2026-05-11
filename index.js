@@ -3,6 +3,8 @@ import express from 'express';
 import movieRoutes from './Routes/movieRoutes.js';
 import authRoutes from './Routes/authRoutes.js';
 import { connectDB,disconnectDb } from './config/database.js';
+import watchListRoutes from './Routes/watchlistRoutes.js'
+import cookieParser from 'cookie-parser';
 
 
 const app = express();
@@ -22,6 +24,8 @@ app.use(express.json())
 app.use(express.urlencoded({extended:true}))
 app.use('/',movieRoutes)
 app.use('/api/auth',authRoutes)
+app.use('/api/watchlist',watchListRoutes)
+app.use(cookieParser());
 startServer()
 
 process.on('unhandledRejection', (err)=>{
